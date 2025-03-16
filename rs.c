@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +7,32 @@
 
 #include "oblas_lite.c"
 #include "rs.h"
+
+/* Detect VLA support */
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L \
+    && !defined(__STDC_NO_VLA__) && !defined(_MSC_VER)
+  #define HAVE_VLA 1
+#else
+  #define HAVE_VLA 0
+#endif
+
+/* alloca fallback */
+#if !HAVE_VLA
+  #if defined(_MSC_VER)
+    #include <malloc.h>
+    #define stack_alloc _alloca
+  #else
+    #include <alloca.h>
+    #define stack_alloc alloca
+  #endif
+#endif
+
+#if HAVE_VLA
+  #define STACK_ARRAY(type, name, count) type name[count]
+#else
+  #define STACK_ARRAY(type, name, count) \
+      type *name = (type *)stack_alloc((count) * sizeof(type))
+#endif
 
 static void axpy(u8 *a, u8 *b, u8 u, int k)
 {
@@ -131,8 +158,10 @@ int reed_solomon_decode(reed_solomon *rs, u8 **data, u8 *marks, int nr_shards, i
         return -1;
 
     u8 *wrk = rs->p + 1 * rs->ps * rs->ds;
-    u8 erasures[rs->ds], colperm[rs->ds];
-    u8 gaps = 0, rowperm[rs->ds];
+    STACK_ARRAY(u8, erasures, rs->ds);
+    STACK_ARRAY(u8, colperm, rs->ds);
+    STACK_ARRAY(u8, rowperm, rs->ds);
+    u8 gaps = 0;
 
     for (int i = 0; i < rs->ds; i++)
         if (marks[i])
