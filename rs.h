@@ -3,6 +3,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define DATA_SHARDS_MAX 255
 
 typedef struct _reed_solomon {
@@ -22,5 +26,9 @@ void reed_solomon_release(reed_solomon *rs);
 
 int reed_solomon_encode(reed_solomon *rs, uint8_t **shards, int nr_shards, int bs);
 int reed_solomon_decode(reed_solomon *rs, uint8_t **shards, uint8_t *marks, int nr_shards, int bs);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
