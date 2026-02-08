@@ -1,4 +1,4 @@
-OBJ=rs.o
+OBJ=rs_auto.o
 
 TEST_UTILS=\
 t/00util/test\
@@ -6,9 +6,9 @@ t/00util/bench
 
 #CPPFLAGS=-DOBLAS_AVX2
 CFLAGS   = -O3 -g -std=c11 -Wall -I. -Ideps/obl
-CFLAGS  += -march=native -funroll-loops -ftree-vectorize 
+CFLAGS  += -funroll-loops -ftree-vectorize 
 
-all: rs.o
+all: rs_auto.o
 
 t/00util/test.o: CPPFLAGS+=-D_DEFAULT_SOURCE
 
@@ -22,7 +22,7 @@ check: clean $(TEST_UTILS)
 	prove -I. -v t/*.t
 
 clean:
-	$(RM) *.o *.a $(TEST_UTILS) $(OBJ)
+	$(RM) *.o *.a $(TEST_UTILS) $(OBJ) t/00util/*.o
 
 indent:
 	find -name '*.[h,c]' | xargs clang-format -i
@@ -30,7 +30,7 @@ indent:
 scan: 
 	scan-build --status-bugs $(MAKE) clean $(OBJ) $(TEST_UTILS)
 
-valgrind: CFLAGS = -O0 -g -std=c11 -Wall -I. -Ideps/obl
+valgrind: CFLAGS = -O0 -g -std=c11 -Wall -I. -Ideps/obl -march=native
 valgrind: clean $(TEST_UTILS)
 	valgrind --error-exitcode=2 ./t/00util/bench 200 20 512
 

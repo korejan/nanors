@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef GF2_8_MUL_TABLE
 #define GF2_8_MUL_TABLE
 

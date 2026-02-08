@@ -8,31 +8,30 @@
 #include "oblas_lite.c"
 #include "rs.h"
 
-/* Detect VLA support */
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L \
-    && !defined(__STDC_NO_VLA__) && !defined(_MSC_VER)
-  #define HAVE_VLA 1
+#ifndef HAVE_VLA
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L && !defined(__STDC_NO_VLA__) && !defined(_MSC_VER)
+#define HAVE_VLA 1
 #else
-  #define HAVE_VLA 0
+#define HAVE_VLA 0
 #endif
 
 /* alloca fallback */
 #if !HAVE_VLA
-  #if defined(_MSC_VER)
-    #include <malloc.h>
-    #define stack_alloc _alloca
-  #else
-    #include <alloca.h>
-    #define stack_alloc alloca
-  #endif
+#if defined(_MSC_VER)
+#include <malloc.h>
+#define stack_alloc _alloca
+#else
+#include <alloca.h>
+#define stack_alloc alloca
+#endif
 #endif
 
 #if HAVE_VLA
-  #define STACK_ARRAY(type, name, count) type name[count]
+#define STACK_ARRAY(type, name, count) type name[count]
 #else
-  #define STACK_ARRAY(type, name, count) \
-      type *name = (type *)stack_alloc((count) * sizeof(type))
+#define STACK_ARRAY(type, name, count) type *name = (type *)stack_alloc((count) * sizeof(type))
 #endif
+#endif /* HAVE_VLA */
 
 static void axpy(u8 *a, u8 *b, u8 u, int k)
 {

@@ -1,3 +1,16 @@
+/*
+ * rs.h — Public API for nanors
+ *
+ * This header defines the public API for the nanors Reed-Solomon library.
+ * It is implemented by rs.c and rs_auto.c.  The latter provides runtime
+ * dispatch to multiple implementations based on the host CPU's capabilities.
+ *
+ * See rs_auto.h for a drop-in replacement that automatically selects the
+ * best available implementation at runtime.  Include that instead of this
+ * header to get automatic ISA dispatch.
+ */
+#pragma once
+
 #ifndef __RS_H_
 #define __RS_H_
 

@@ -1,3 +1,8 @@
+#pragma once
+
+#ifndef OBLAS_LITE_H
+#define OBLAS_LITE_H
+
 #include <stdint.h>
 
 #include "gf2_8_tables.h"
@@ -9,3 +14,5 @@ void obl_axpy(u8 *a, u8 *b, u8 u, unsigned k);
 void obl_scal(u8 *a, u8 u, unsigned k);
 void obl_swap(u8 *a, u8 *b, unsigned k);
 void obl_axpyb32(u8 *a, u32 *b, u8 u, unsigned k);
+
+#endif /* OBLAS_LITE_H */

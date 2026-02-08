@@ -1,4 +1,5 @@
 /* these tables were generated with polynomial: 285 */
+#pragma once
 
 #ifndef GF2_8_TABLES
 #define GF2_8_TABLES

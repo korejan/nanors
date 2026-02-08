@@ -1,20 +1,36 @@
+#ifndef _MSC_VER
+#define _POSIX_C_SOURCE 199309L
+#endif
+
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#ifdef _MSC_VER
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
 
-#include "rs.h"
+#include "rs_auto.h"
 
 #define MAP(x, max_x, m, n) (m + x / (max_x / (n - m) + 1))
 
 double now(time_t epoch)
 {
+#ifdef _MSC_VER
+    LARGE_INTEGER freq, cnt;
+    QueryPerformanceFrequency(&freq);
+    QueryPerformanceCounter(&cnt);
+    return (double)cnt.QuadPart / (double)freq.QuadPart - (double)epoch;
+#else
     struct timespec now;
     clock_gettime(CLOCK_REALTIME, &now);
     return ((now.tv_sec - epoch) + now.tv_nsec / 1000000000.0);
+#endif
 }
 
 typedef reed_solomon rs_t;
