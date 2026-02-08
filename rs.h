@@ -22,12 +22,21 @@ extern "C" {
 
 #define DATA_SHARDS_MAX 255
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4200) /* zero-sized array in struct (C99 flexible array member) */
+#endif
+
 typedef struct _reed_solomon {
     int ds;
     int ps;
     int ts;
     uint8_t p[];
 } reed_solomon;
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #define reed_solomon_bufsize(ds, ps) (sizeof(reed_solomon) + 2 * (ps) * (ds))
 #define reed_solomon_reconstruct reed_solomon_decode
