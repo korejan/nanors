@@ -2,4 +2,7 @@ rst
 bench
 *.o
 *.a
-
+*.exe
+*.dll
+build/*
+build-msvc/*
