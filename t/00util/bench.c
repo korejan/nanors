@@ -64,7 +64,6 @@ int run(int seed, int K, int N, int T, double *et, double *dt)
         }
     }
 
-    reed_solomon_init();
     rs_t *rs = reed_solomon_new(K, N);
     if (!rs) {
         cleanup(buf, cmp, marks, K, N);
@@ -121,6 +120,8 @@ int main(int argc, char *argv[])
     srand(seed);
 
     printf("===BEGIN===P SEED: %d K: %d N: %d T: %d\n", seed, K, N, T);
+
+    reed_solomon_init();
 
     int Mb = 128;
     int num = Mb * (1024 * 1024) / (K * T);

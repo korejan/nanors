@@ -33,7 +33,6 @@ int run(int seed, int K, int N, int T)
         }
     }
 
-    reed_solomon_init();
     rs_t *rs = reed_solomon_new(K, N);
     int failed = 0;
     if (rs) {
@@ -101,6 +100,8 @@ int main(int argc, char *argv[])
     T = MAP(rand(), RAND_MAX, 1, 1460);
 
     printf("===BEGIN===P SEED: %d K: %d N: %d T: %d\n", seed, K, N, T);
+
+    reed_solomon_init();
 
     int num = 1;
     for (int i = 0; i < num; i++) {
