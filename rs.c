@@ -4,6 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* C++20 removed the register storage-class specifier; define it away.
+ * Uses _MSVC_LANG because MSVC's __cplusplus is 199711L by default. */
+#if (defined(__cplusplus) && __cplusplus >= 202002L) || \
+    (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
+#define register
+#endif
+
 #include "oblas_lite.c"
 #include "rs.h"
 
@@ -106,7 +113,7 @@ void reed_solomon_init(void)
 
 reed_solomon *reed_solomon_new_static(void *buf, size_t len, int ds, int ps)
 {
-    reed_solomon *rs = buf;
+    reed_solomon *rs = (reed_solomon *)buf;
 
     if ((ds + ps) > DATA_SHARDS_MAX || ds <= 0 || ps <= 0)
         return NULL;
@@ -141,7 +148,7 @@ reed_solomon *reed_solomon_new(int ds, int ps)
         return NULL;
     }
 
-    return buf;
+    return (reed_solomon *)buf;
 }
 
 void reed_solomon_release(reed_solomon *rs)
